@@ -35,3 +35,18 @@
 
 * Poner en un servidor un nodo más de la red de criptomonedas
 * Analizar el tráfico que pasa por el servidor
+
+--------------------------------------------------------------------------------
+
+## Ideas Final
+
+* Montar un servidor de NextCloud en la `raspberry pi`
+    * Montar la imagen del sistema operativo en una tarjeta `SD`
+    * Administración básica para crear usuarios y grupos
+    * Claves SSH
+    * Usar DNS (`duckdns` es una buena alternativa)
+    * Instalar NextCloud
+    * Instalar certificación `HTTPS`
+    * Reenvío de puertos
+    * Asegurar el servidor
+    * Análisis de tráfico en la subida o descarga de archivos
