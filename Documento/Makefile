@@ -10,8 +10,9 @@ pdf:
 	@pdflatex Trabajo.tex
 
 clean:
-	@rm *.log
-	@rm *.aux
+	@rm -f *.log
+	@rm -f *.aux
+	@rm -f *.toc
 
 deepclean:
 	@make clean
