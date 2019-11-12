@@ -3,6 +3,8 @@ title: Memoria Trabajo Fundamentos de Redes
 author: Sergio Quijano Rey, Daniel Gonzálvez
 ---
 
+--------------------------------------------------------------------------------
+
 # Motivación
 
 La motivación que hay detrás de este trabajo es la de estudiar cómo funcionan los productos de almacenamiento en la nube, a través de la creación de un servidor bastante básico de almacenamiento en red sobre nuestro propio servidor. 
@@ -10,6 +12,8 @@ La motivación que hay detrás de este trabajo es la de estudiar cómo funcionan
 Para ello hemos usado una *Raspberry Pi 3* en la que hemos instalado el programa de software libre *Nextcloud*. Sobre este servidor muy básico hemos tenido que realizar ciertas labores de administración, más propias de una asignatura como *Ingeniería de Servidores*, y otras labores centradas en aspectos de redes. 
 
 Esto nos ha permitido conocer y aprender hasta cierto punto los aspectos a tener en cuenta para crear infraestructuras de este tipo, centrándonos especialmente en aspectos específicos de las redes.
+
+--------------------------------------------------------------------------------
 
 # Especificación del hardware usado
 
@@ -20,6 +24,8 @@ El hardware que hemos usado es el siguiente:
     * 1GB RAM
     * Tarjeta SD *Samsumg Evo*, 64 GB (actúa como disco duro del ordenador)
 * Cargador de móvil *MicroUSB*: dará corriente a la *Raspberry Pi 3*
+
+--------------------------------------------------------------------------------
 
 # Instalación básica del servidor
 
@@ -42,6 +48,18 @@ Hacemos ssh a nuestro servidor con la dirección que acabamos de obtener: `ssh u
 El primer paso es hacer una primera actualización del sistema con `apt update; apt upgrade`, e instalar algunos paquetes básicos para trabajar, como pueden ser `vim` o `make`
 
 ## Creación del usuario de administración
+
+Crearemos un usuario `administrator` para las labores de administración del servidor. Para ello ejecutamos `useradd -m administrator`. La opción `-m` crea el directorio `home` del usuario según lo especificado por el `skel`.
+
+Añadimos al administrador al grupo `sudo` con el comando `usermod -aG sudo administrator`. La opción `-a` indica que estamos añadiendo al grupo, en vez de cambiar al usuario de grupo, y la opción `-G` es necesario para el anterior *flag*, indicando los grupos suplementarios a los que se va a añadir.
+
+Para cambiar la contraseña al usuario, usamos el comando `passwd administrator`, que nos pide por el *prompt* introducir la antigua contraseña y, a continuación, la nueva contraseña.
+
+Ahora borramos al usuario que venía por defecto con el comando `userdel -r ubuntu`, con la opción `-r` para que borre su `home`. Es muy importante que antes de hacer esto nos aseguremos que el usuario `administrator` puede hacer sudo. En otro caso, al darse que `root` no tiene contraseña, perderíamos todo modo de hacer `sudo`, pues no podemos cambiar de usuario desde `administrator` a `root` ni logearnos directamente a `root`
+
+El último detalle es editar el archivo `/etc/passwd` para cambiar el shell de nuestro usuario al que prefiramos, en nuestro caso, `bash`. Por defecto usa `sh`
+
+--------------------------------------------------------------------------------
 
 # Aspectos de Redes en la instalación del servidor
 
