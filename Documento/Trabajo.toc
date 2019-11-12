@@ -1,7 +1,0 @@
-\contentsline {section}{\numberline {1}Motivacion}{3}% 
-\contentsline {section}{\numberline {2}Especificaci\IeC {\'o}n del hardware usado}{4}% 
-\contentsline {section}{\numberline {3}Instalaci\IeC {\'o}n b\IeC {\'a}sica del servidor}{4}% 
-\contentsline {section}{\numberline {4}Aspectos de Redes en la instalaci\IeC {\'o}n del servidor}{4}% 
-\contentsline {section}{\numberline {5}Instalaci\IeC {\'o}n de Nextcloud}{4}% 
-\contentsline {section}{\numberline {6}Uso b\IeC {\'a}sico de Nextcloud}{4}% 
-\contentsline {section}{\numberline {7}An\IeC {\'a}lisis del sistema}{4}% 
