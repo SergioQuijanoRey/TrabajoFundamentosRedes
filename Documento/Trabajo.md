@@ -78,6 +78,8 @@ Con esto ya tenemos una protección básica, pero mínima, para cuando conectemo
 
 ## Configuración para el acceso remoto
 
+El primer obstáculo para que nuestro servidor sea accesible desde el exterior es que no sabemos cuál es la ip de nuestro servidor. Además, aunque la sepamos, lo cual es bastante fácil con un comando como `curl ifconfig.me`, por usar un proveedor de internet para redes de hogar, en nuestro caso *Vodafone*, la ip no es estática, es decir, que va cambiando con el tiempo. Por tanto, la solución es usar un servidor `dns` al que le estemos comunicando constantemente nuestra dirección ip. Usaremos una solución gratuita a través de la página [duckdns.org](duckdns.org)
+
 --------------------------------------------------------------------------------
 
 # Instalación de Nextcloud
