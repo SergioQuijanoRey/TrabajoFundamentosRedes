@@ -76,17 +76,33 @@ El hardware que hemos usado es el siguiente:
 
 ---
 
-Hacemos ssh a nuestro servidor con la dirección que acabamos de obtener: `ssh ubuntu@192.168.1.8`. `ubuntu` es el usuario por defecto que está creado, además de `root`. Este usuario está en la lista de `sudoers`, por lo que tenemos privilegios de administración a través de él. Pero para facilitar las cosas, nos registramos como `root` usando el comando `sudo su -`. 
+* El usuario `ubuntu` está en la lista de `sudoers`
+* El usuario `root` no tiene contraseña. Solo se puede alcanzar:
+    1. Accediendo a `ubuntu`
+    2. `sudo su -`
+* Lo primero que vamos a hacer es actualizar el sistema:
+    * `sudo apt update;  sudo apt upgrade`
+    * Instalamos paquetes básicos como `vim` o `make` para empezar a trabajar
 
-El primer paso es hacer una primera actualización del sistema con `apt update; apt upgrade`, e instalar algunos paquetes básicos para trabajar, como pueden ser `vim` o `make`
+---
 
 ## Creación del usuario de administración
 
-Crearemos un usuario `administrator` para las labores de administración del servidor. Para ello ejecutamos `useradd -m administrator`. La opción `-m` crea el directorio `home` del usuario según lo especificado por el `skel`.
+* Desde `root`
+* Crearemos un usuario `administrator` para las labores de administración del servidor
+* Ejecutamos `useradd -m administrator`:
+    * `-m`: crea el directorio `home` según lo indicado por el directorio `/etc/skel`
+* Añadimos el administrador al grupo `sudo`: `usermod -aG sudo administrator`
+    * `-a`: en vez de cambiar el grupo, añadimos un grupo suplementario
+    * `-G`: opción obligatoria tras `-G` que indica los grupos suplementarios
+* Cambiamos la contraseña de este usuario con `passwd administrator`
+* Borramos el usuario `ubuntu`: `userdel -r ubuntu`:
+    * `-r`: para borrar los ficheros del usuario
 
-Añadimos al administrador al grupo `sudo` con el comando `usermod -aG sudo administrator`. La opción `-a` indica que estamos añadiendo al grupo, en vez de cambiar al usuario de grupo, y la opción `-G` es necesario para el anterior *flag*, indicando los grupos suplementarios a los que se va a añadir.
+---
 
-Para cambiar la contraseña al usuario, usamos el comando `passwd administrator`, que nos pide por el *prompt* introducir la antigua contraseña y, a continuación, la nueva contraseña.
+
+
 
 Ahora borramos al usuario que venía por defecto con el comando `userdel -r ubuntu`, con la opción `-r` para que borre su `home`. Es muy importante que antes de hacer esto nos aseguremos que el usuario `administrator` puede hacer sudo. En otro caso, al darse que `root` no tiene contraseña, perderíamos todo modo de hacer `sudo`, pues no podemos cambiar de usuario desde `administrator` a `root` ni logearnos directamente a `root`
 
