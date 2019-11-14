@@ -183,7 +183,10 @@ curl -k -o ~/duckdns/duck.log -K -
 
 ---
 
-* Lo siguiente que necesitamos hacer es el reenvío de puertos
+* Lo siguiente que necesitamos hacer es el reenvío de puertos para que se pueda acceder por `ssh` y se pueda acceder a las páginas web que mostremos:
+    * Puerto 22: `ssh`
+    * Puerto 80: `http`
+    * Puerto 443: `https`
 * Abrimos el administrador de nuestro router desde el `192.168.1.1`
 
 ---
@@ -192,10 +195,47 @@ curl -k -o ~/duckdns/duck.log -K -
 
 --------------------------------------------------------------------------------
 
-# Instalación de Nextcloud
+# Instalación y configuración de Nextcloud
 
-# Uso básico de Nextcloud
+## Instalación
 
-# Análisis del sistema
+* Usamos `snap` como gestor de paquetes porque su versión de `nextcloud` viene con algunas facilidades
+* Para instalar `nextcloud`: `sudo snap install nextcloud`
+* Comprobamos la instalación con `snap changes nextcloud`
+* Con esto hemos instalado el *Stack* `LAMP`:
+    * `Linux`
+    * `Apache`
+    * `MariaDB`: versión alternativa de software libre de `MySQL`
+    * `PHP`
 
-# Referencias
+---
+
+*  Creamos un usuario y contraseña de administrador propio para Nextcloud: `sudo nextcloud.manual-install dbadmin <password>`
+* Con `sudo nextcloud.occ config:system:get trusted_domains` vemos que el único dominio por el que podemos acceder al servidor apache de Nextcloud es `localhost`
+* Añadimos nuestro dominio en los dominios de confianza con `nextcloud.occ config:system:set trusted_domains 1 -[value=midominio.com](http://value=midominio.com/)`
+* Accedemos a [danielsergio.duckdns.org](http://danielsergio.duckdns.org) y como ya hemos creado por la línea de comando una cuenta de administrador, accedemos con ella a `NextCloud`
+
+---
+
+## Certificado HTTPS
+
+* Muchos de los plugins que podemos instalar en `nextcloud` exigen que tengamos el certificado de `HTTPS`, como por ejemplo el gestor de contraseñas
+* Para ello vamos a certificar nuestro servidor
+* Hay dos formas:
+    * Manual: Usando el certificador que queramos, por ejemplo [Cerbot](https://certbot.eff.org)
+    * Usando el certificador que trae `nextcloud`: nos quita de muchas complicaciones
+
+---
+
+* Antes de pasar el certificador, hacemos una mínica configuración del firewall con *Uncomplicated Firewall* o `ufw`:
+    * `sudo ufw allow 80,443/tcp`
+* Ahora pasamos el certificador con: `sudo nextcloud.enable-https lets-encrypt`
+
+---
+
+* Es importante que antes de realizar la certificación hayamos hecho el reenvío de puertos al puerto 443, porque a partir de ahora `nextcloud` solo usará `HTTPS`
+* Si no lo hacemos, no tendremos acceso a la página hasta hacer el reenvío de puertos
+
+# Referencias:
+
+* [1]: []
