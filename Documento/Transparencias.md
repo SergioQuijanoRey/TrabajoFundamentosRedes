@@ -1,6 +1,10 @@
 ---
 title: Memoria del Trabajo de Fundamentos de Redes
 author: Sergio Quijano Rey, Daniel Gonzálvez
+output:
+  beamer_presentation:
+    toc: true
+    slide_level: 2
 ---
 
 --------------------------------------------------------------------------------
@@ -25,24 +29,52 @@ El hardware que hemos usado es el siguiente:
     * Tarjeta SD *Samsumg Evo*, 64 GB (actúa como disco duro del ordenador)
 * Cargador de móvil *MicroUSB*: dará corriente a la *Raspberry Pi 3*
 
+---
+
+![Raspberry Pi 3 Model B](./Imagenes/raspberry.jpg)
+
 --------------------------------------------------------------------------------
 
 # Instalación básica del servidor
 
 ## Instalación del sistema operativo
 
-Lo primero que necesitamos es descargar el sistema operativo que vamos a usar. Nostros vamos a usar *Ubuntu Server* para la *Raspberry Pi 3*. Podemos descargar un fichero `.img` del siguiente link: [Página de descarga](https://ubuntu.com/download/iot/raspberry-pi)
+* Ubuntu Server: sin interfaz gráfica para ahorrar recursos
+* Descargamos el `.img` del siguiente [link](https://ubuntu.com/download/iot/raspberry-pi)
 
-Una vez descargado el archivo tenemos que quemarlo en la tarjeta SD. Usando un adaptador `SD-USB` lo conectamos a nuestro ordenador. Localizamos la tarjeta SD usando el comando `lsblk`. Al ver que el dispostivo está ubicado en `/dev/sdb`, usamos el siguiente comando para quemar la imagen del sistema en la tarjeta SD: `sudo dd if="ubuntu-raspberry.img" of="/dev/sdb" bs=4M status=progress`. Una alternativa a usar la línea de comandos es usar un programa con interfaz gráfica como `etcher`. 
+---
+
+* Vemos dónde está localizada la tarjeta SD con `lsblk`
+* Quemamos la imagen con el comando: `sudo dd if="ubuntu-raspberry.img" of="/dev/sdb" bs=4M status=progress`
+    * `if`: archivo de entrada
+    * `of`: archivo de salida
+    * `bs`: tamaño del bloque
+    * `status=progress`: para ver la barra de progreso
+* Se podría usar una herramienta con `GUI` como `etcher`
+
+---
 
 ## Configuración inicial del sistema
 
-Ahora introducimos la tarjeta SD en la *Raspberry Pi* y conectamos el cargador, tanto a la *Raspberry Pi* como a la corriente. También conectamos un cable `ethernet` desde el router hasta la *Raspberry Pi*, para tener conexión a internet
+### Montaje de la Raspberry Pi
 
-Gracias a que estamos usando *Ubuntu Server*, por defecto tiene el servicio `ssh` habilitado por defecto. Así que entramos al administrador del router escribiendo en la barra de nuestro navegador la dirección `192.168.1.1`. Tras esto podemos localizar su dirección local, como se muestra en la **Imagen 1**:
+* Insertamos la tarjeta SD en la *Raspberry Pi*
+* Conectamos el cable ethernet RJ45 entre el router de nuestra casa y la *Raspberry Pi*
+* Conectamos un cargador de móvil *micro-usb* a la toma de la *Raspberry Pi*
 
-<!--TODO-->
-![Imagen 1](localizar_raspberry.png)
+---
+
+### Primera conexión
+
+* Gracias a que estamos usando *Ubuntu Server*, tenemos `ssh` habilitado por defecto
+* Abrimos el administrador del router en nuestro navegador (`192.168.1.1`) para localizar la ip local de la raspberry
+* Hacemos ssh: `ssh ubuntu@192.168.1.8`
+
+---
+
+![Localizando la raspberry en el administrador del router](localizar_raspberry.png)
+
+---
 
 Hacemos ssh a nuestro servidor con la dirección que acabamos de obtener: `ssh ubuntu@192.168.1.8`. `ubuntu` es el usuario por defecto que está creado, además de `root`. Este usuario está en la lista de `sudoers`, por lo que tenemos privilegios de administración a través de él. Pero para facilitar las cosas, nos registramos como `root` usando el comando `sudo su -`. 
 
