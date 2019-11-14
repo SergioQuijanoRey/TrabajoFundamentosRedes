@@ -154,7 +154,41 @@ El hardware que hemos usado es el siguiente:
 
 ## Configuración para el acceso remoto
 
-El primer obstáculo para que nuestro servidor sea accesible desde el exterior es que no sabemos cuál es la ip de nuestro servidor. Además, aunque la sepamos, lo cual es bastante fácil con un comando como `curl ifconfig.me`, por usar un proveedor de internet para redes de hogar, en nuestro caso *Vodafone*, la ip no es estática, es decir, que va cambiando con el tiempo. Por tanto, la solución es usar un servidor `dns` al que le estemos comunicando constantemente nuestra dirección ip. Usaremos una solución gratuita a través de la página [duckdns.org](duckdns.org)
+* Nuestro primer obstáculo para que el servidor sea accesible desde el exterior es que no sabemos cuál es la `IP` del servidor:
+    * `curl ifconfig.me`: nos dice la `IP`
+    * Tenemos un servicio de internet con *Vodafone* que no nos da `IP` estática. La `IP` va cambiando a lo largo del tiempo
+* **Solución**: conectarnos con un servidor de `DNS` cada cierto tiempo para comunicarle nuestra `IP`
+
+---
+
+### DuckDNS
+
+* Usamos la página gratuita [duckdns](duckdns.org)
+* Lo primero es registrarnos, en nuestro caso, con una cuenta de `Google`
+* Registramos un nuevo registro, por ejemplo, `danielsergio.duckdns.org`
+* Seguimos los pasos que nos indica la página:
+    * Comprobamos que el servicio de `cron` está corriendo 
+    * Creamos el archivo `~/duckdns/duck.sh` con el comando siguiente:
+
+~~~bash
+echo url="https://www.duckdns.org/update?domains=
+danielsergio&token=valor_token&ip=" 
+curl -k -o ~/duckdns/duck.log -K -
+~~~
+
+* El comando envía un mensaje `HTTP` de `UPDATE`, comunicandole nuestro `token` para que actualice la `IP` asociada al dominio `danielsergio.duckdns.org`
+* Ahora, configurando `cron` hacemos que se ejecute este script cada cinco minutos:
+    * `crontab -e`
+    * `*/5 * * * * ~/duckdns/duck.sh >/dev/null 2>&1`
+
+---
+
+* Lo siguiente que necesitamos hacer es el reenvío de puertos
+* Abrimos el administrador de nuestro router desde el `192.168.1.1`
+
+---
+
+![Reenvío de puertos](./Imagenes/reenvio_puertos.png)
 
 --------------------------------------------------------------------------------
 
