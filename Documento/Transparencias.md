@@ -98,31 +98,59 @@ El hardware que hemos usado es el siguiente:
 * Cambiamos la contraseña de este usuario con `passwd administrator`
 * Borramos el usuario `ubuntu`: `userdel -r ubuntu`:
     * `-r`: para borrar los ficheros del usuario
+* Editamos `/etc/passwd` para que la shell de `administrator` sea bash
+
+---
+
+### Cuidado!
+
+* Antes de borrar al usuario `ubuntu` hay que comprobar que tenemos permisos para hacer `sudo` y para logearnos en el `root`
+* En otro caso nos quedaríamos sin todos los permisos de administración
+
+# Aspectos de Redes en la instalación del servidor
+
+## Protección básica del servidor
+
+* Hasta ahora nuestro servidor solo es alcanzable desde la red local. 
+* Queremos conectarlo al exterior de nuestra red, pero antes debemos dar una seguridad básica
+* Inseguridades más evidentes:
+    * Al hacer `ssh` nos conectamos a través de una contraseña $\rightarrow$ ataques por fuerza bruta
+    * Estos ataques se pueden dirigir directamente al usuario `root` lo que lo hace más peligroso
+        * En verdad ahora no se puede porque no tiene contraseña, pero si le diésemos contraseña se abriría esta posibilidad
+* Hay infinidad de problemas que no estamos contemplando (ataques `DDoS`, por ejemplo), pero en esta sección solo nos vamos a preocupar de estos
 
 ---
 
 
+### Generamos claves asimétricas
 
+* `ssh` puede usar claves de cifrado asimétrico, que son las que vamos a usar para hacer el log
+* Desde nuestro ordenador, creamos nuestras claves con: `ssh-keygen`
+    * Genera claves asimétricas que, por defecto, usan RSA
+    * Se puede usar un `passphrase`
+        * Nos protege si nos roban la clave privada
+* El comando genera los archivos:
+    * `~/.ssh/id_rsa`: clave privada
+    * `~/.ssh/id_rsa.pub`: clave pública
 
-Ahora borramos al usuario que venía por defecto con el comando `userdel -r ubuntu`, con la opción `-r` para que borre su `home`. Es muy importante que antes de hacer esto nos aseguremos que el usuario `administrator` puede hacer sudo. En otro caso, al darse que `root` no tiene contraseña, perderíamos todo modo de hacer `sudo`, pues no podemos cambiar de usuario desde `administrator` a `root` ni logearnos directamente a `root`
+---
 
-El último detalle es editar el archivo `/etc/passwd` para cambiar el shell de nuestro usuario al que prefiramos, en nuestro caso, `bash`. Por defecto usa `sh`
+### Colocamos las claves asimétricas en el servidor
 
---------------------------------------------------------------------------------
+* Copiamos la clave pública al servidor con: `scp id_rsa.pub administrator@192.168.1.8:~/.ssh/sergio.pub`
+* Dentro del servidor añadimos la clave: `cat ~/.ssh/sergio.pub >> ~/.ssh/authorized_keys` 
+* Ya no se nos pedirá una contraseña cuando nos conectemos a `administrator`
+* Aún así, seguimos pudiendo conectarnos a través de contraseña, y por tanto, no hemos asegurado nada todavía
 
-# Aspectos de Redes en la instalación del servidor
+---
 
-## Protección básica del servidor y SSH
+### Pequeña aseguración
 
-En lo que sigue, vamos a dar conexión a nuestro servidor para que sea alcanzable desde fuera de la red local. Por ello, hay que dar una seguridad básica para evitar ciertos ataques que comprometan nuestro servidor. Ahora mismo, el mayor problema que tenemos es que se pueden hacer ataques de fuerza bruta en `ssh` para logearse, probando todas las posibles contraseñas. Y esto es aún más peligroso teniendo en cuenta de que se puede hacer directamente sobre el usuario `root`. Aunque ahora esto último no se puede hacer, porque `root` no tiene contraseña, si en algún momento se le asigna una contraseña, esto sería posible. Por tanto, estos son los problemas más básicos (que ni remotamente son los únicos) que vamos a tratar de solventar.
+* Editaremos el archivo `/etc/ssh/sshd_config`
+    * Para que no se puedan usar contraseñas: `PasswordAuthentification: no`
+    * Para que no se pueda acceder al `root` desde `ssh`: `PermitRootLogin: no`
 
-Para ello vamos a usar `shh`. `ssh` puede usar claves de cifrado asimétrico. Para generar estas claves, desde nuestros ordenadores con los que accedemos al servidor, lanzamos el comando `ssh-keygen`, que genera los archivos `~/.ssh/id_rsa.pub` (clave pública) y `~/.ssh/id_rsa` (clave privada). La encriptación que se usa por defecto es RSA, aunque esto se puede cambiar. También se puede elegir una contraseña *passphrase*, esto hace que para poder leer la clave privada haya que introducir la contraseña, añadiendo un nivel extra de seguridad. Por tanto, si alguien consigue nuestra clave privada, no puede conectarse al servidor, porque conoce la clave que desencripta la propia clave privada. Tampoco la podría usar con otros fines. 
-
-Para que nuestro servidor nos acepte la clave `ssh`, usamos el comando `scp id_rsa.pub administrator@192.168.1.8:~/.ssh/sergio.pub` para copiar la clave pública. Una vez dentro del servidor, ejecutamos `cat sergio.pub >> authorized_keys` y ya podemos borrar el archivo copiado. A partir de este momento, el servidor ya no nos pedirá la clave al conectarnos desde nuestro ordenador al servidor a través del usurio `administrator`.
-
-Esto no quita que se sigua pudiendo conectar usando una contraseña normal. Para evitar esto, editamos el archivo `/etc/ssh/sshd_config`. Para evitar que nadie, ya sea con contraseña normal o con clave `ssh`, se pueda conectar directamente al `root`, establecemos el siguiente campo: `PermitRootLogin: no`. Para forzar el uso de claves RSA como único método, establecemos el siguiente campo `PasswordAuthentification: no`
-
-Con esto ya tenemos una protección básica, pero mínima, para cuando conectemos nuestro servidor con las redes exteriores
+---
 
 ## Configuración para el acceso remoto
 
